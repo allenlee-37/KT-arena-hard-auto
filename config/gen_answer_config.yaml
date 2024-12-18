@@ -9,3 +9,6 @@ num_choices: 1
 # a list of model to generate answers
 model_list:
   - gpt-3.5-turbo-0125
+  - gpt2
+  - upstage/SOLAR-10.7B-Instruct-v1.0
+  - meta-llama/Llama-3.1-8B-Instruct

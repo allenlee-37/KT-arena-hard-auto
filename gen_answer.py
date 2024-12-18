@@ -28,6 +28,7 @@ from utils import (
     chat_completion_cohere,
     reorg_answer_file,
     OPENAI_MODEL_LIST,
+    local_llm_response,
     temperature_config,
 )
 
@@ -79,12 +80,18 @@ def get_answer(
                                                 messages=conv,
                                                 temperature=temperature,
                                                 max_tokens=max_tokens)
+            elif api_type == 'transformers':
+                output = local_llm_response(model=endpoint_info["model_name"],
+                                            prompt=conv,
+                                            temperature=temperature,
+                                            max_tokens=max_tokens)
             else:
                 output = chat_completion_openai(model=endpoint_info["model_name"], 
                                                 messages=conv, 
                                                 temperature=temperature, 
                                                 max_tokens=max_tokens, 
                                                 api_dict=api_dict)
+                
             conv.append({"role": "assistant", "content": output})
 
             turns.append({"content": output})
