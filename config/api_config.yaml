@@ -26,3 +26,15 @@ gpt-4-1106-preview:
     endpoints: null
     api_type: openai
     parallel: 8
+
+EXAONE-3.0-7.8B-Instruct:
+    model_name: EXAONE-3.0-7.8B-Instruct
+    endpoints: null
+    api_type: transformers
+    parallel: 8
+
+Llama-3.1-8B:
+    model_name: meta-llama/Llama-3.1-8B
+    endpoints: null
+    api_type: transformers
+    parallel: 8

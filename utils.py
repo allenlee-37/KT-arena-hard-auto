@@ -338,15 +338,15 @@ def local_llm_response(model:str,
                        prompt:str,
                        temperature:float=0.7,
                        max_tokens:int=100) -> str:
-    from transformers import GPT2LMHeadModel, GPT2Tokenizer
+    from transformers import AutoModelForCausalLM, AutoTokenizer
     import torch
     # 토크나이저 및 모델 초기화
-    tokenizer = GPT2Tokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained(model)
     
     # eos_token을 pad_token으로 설정
     tokenizer.pad_token = tokenizer.eos_token
 
-    model = GPT2LMHeadModel.from_pretrained(model).to("cuda" if torch.cuda.is_available() else "cpu")
+    model = AutoModelForCausalLM.from_pretrained(model).to("cuda" if torch.cuda.is_available() else "cpu")
     
     # 입력 토큰화
     inputs = tokenizer.encode_plus(
