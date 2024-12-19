@@ -5,6 +5,9 @@ import yaml
 import random
 import requests
 
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
+
 from typing import Optional
 from glob import glob
 
@@ -338,8 +341,7 @@ def local_llm_response(model:str,
                        prompt:str,
                        temperature:float=0.7,
                        max_tokens:int=100) -> str:
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    import torch
+    
     # 토크나이저 및 모델 초기화
     tokenizer = AutoTokenizer.from_pretrained(model)
     
