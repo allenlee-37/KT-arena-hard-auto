@@ -8,5 +8,6 @@ num_choices: 1
 
 # a list of model to generate answers
 model_list:
-  - Llama-3.1-8B
+  - EXAONE-3.5-32B-Instruct
+# Llama-3.1-8B
 #  - gpt-3.5-turbo-0125

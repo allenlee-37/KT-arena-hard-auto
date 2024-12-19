@@ -348,7 +348,7 @@ def local_llm_response(model:str,
     # eos_token을 pad_token으로 설정
     tokenizer.pad_token = tokenizer.eos_token
 
-    model = AutoModelForCausalLM.from_pretrained(model).to("cuda" if torch.cuda.is_available() else "cpu")
+    model = AutoModelForCausalLM.from_pretrained(model, device_map='auto', trust_remote_code=True, torch_dtype=torch.float16, low_cpu_mem_usage=True) #.to("cuda" if torch.cuda.is_available() else "cpu")
     
     # 입력 토큰화
     inputs = tokenizer.encode_plus(
