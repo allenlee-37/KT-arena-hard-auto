@@ -30,6 +30,7 @@ from utils import (
     OPENAI_MODEL_LIST,
     local_llm_response,
     temperature_config,
+    load_transformers_model,
 )
 
 
@@ -39,7 +40,7 @@ def get_answer(
     if question["category"] in temperature_config:
         temperature = temperature_config[question["category"]]
 
-    api_type = endpoint_info["api_type"]
+    api_type = endpoint_info["api_type"] # 모델 타입 지정 - 로컬 모델은 transformers, 오픈AI는 openai, Azure는 azure 등등 
 
     conv = []
 
@@ -47,6 +48,10 @@ def get_answer(
         conv.append({"role": "system", "content": endpoint_info["system_prompt"]})
     elif model in OPENAI_MODEL_LIST:
         conv.append({"role": "system", "content": "You are a helpful assistant."})
+
+    # transformers 모델을 사용할 경우 로드
+    if api_type == "transformers": 
+        model_instance = load_transformers_model(model_name=endpoint_info["model_name"])
 
     encoding = tiktoken.encoding_for_model("gpt-3.5-turbo")
     choices = []
@@ -81,7 +86,7 @@ def get_answer(
                                                 temperature=temperature,
                                                 max_tokens=max_tokens)
             elif api_type == 'transformers':
-                output = local_llm_response(model=endpoint_info["model_name"],
+                output = local_llm_response(model_instance=model_instance,
                                             prompt=conv,
                                             temperature=temperature,
                                             max_tokens=max_tokens)

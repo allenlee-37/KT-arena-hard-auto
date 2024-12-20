@@ -337,18 +337,19 @@ def reorg_answer_file(answer_file):
         for qid in qids:
             fout.write(answers[qid])
 
-def local_llm_response(model:str, 
+def load_transformers_model(model_name: str) -> AutoModelForCausalLM:
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map='auto', trust_remote_code=True, torch_dtype=torch.float16, low_cpu_mem_usage=True) #.to("cuda" if torch.cuda.is_available() else "cpu")
+    return model
+
+def local_llm_response(model_instance: AutoModelForCausalLM, 
                        prompt:str,
                        temperature:float=0.7,
                        max_tokens:int=100) -> str:
-    
     # 토크나이저 및 모델 초기화
-    tokenizer = AutoTokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained(model_instance)
     
     # eos_token을 pad_token으로 설정
     tokenizer.pad_token = tokenizer.eos_token
-
-    model = AutoModelForCausalLM.from_pretrained(model, device_map='auto', trust_remote_code=True, torch_dtype=torch.float16, low_cpu_mem_usage=True) #.to("cuda" if torch.cuda.is_available() else "cpu")
     
     # 입력 토큰화
     inputs = tokenizer.encode_plus(
@@ -360,11 +361,11 @@ def local_llm_response(model:str,
         return_attention_mask=True
     )
     
-    input_ids = inputs["input_ids"].to(model.device)
-    attention_mask = inputs["attention_mask"].to(model.device)
+    input_ids = inputs["input_ids"].to(model_instance.device)
+    attention_mask = inputs["attention_mask"].to(model_instance.device)
     
     # 응답 생성
-    outputs = model.generate(
+    outputs = model_instance.generate(
         input_ids=input_ids,
         attention_mask=attention_mask,
         max_new_tokens=max_tokens,  # 새로운 토큰만 100개 생성
